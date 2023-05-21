@@ -1,0 +1,20 @@
+# Build with: docker build -t django-toolbox -f Dockerfile.django .
+# Use the image to generate your django project. Or run interactively to run other django commands.
+# Example: docker run --rm -it -v $PWD:/app django-toolbox django-admin startproject myproject .
+# Example: docker run --rm -it -v $PWD:/app -p 8000:8000 django-toolbox
+FROM python:3.11.3-alpine3.18
+
+# Add required system packages.
+RUN apk add --no-cache build-base ca-certificates gcc linux-headers tzdata nodejs yarn sqlite-dev postgresql-dev mysql-dev musl-dev libffi-dev jpeg-dev zlib-dev git nano npm
+
+# Add user and configure directory.
+RUN adduser -D django
+USER django
+WORKDIR /app
+
+# Install pip packages.
+ENV PATH="/home/django/.local/bin:$PATH"
+RUN python -m pip install Django==4.2.1
+#RUN python -m pip install -r requirements.txt
+
+CMD ["/bin/sh"]
